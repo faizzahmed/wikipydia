@@ -4,22 +4,31 @@
 # $ python wiki.py -string
 # ______________________________________________________________________________________________________
 from bs4 import BeautifulSoup
-import argparse
+import sys
 import requests
 
-WIKI_URL = 'https://en.wikipedia.org/wiki/'
+class wiki():
 
-# get the page 
-def call_wiki(search_text):
-    page = requests.get( WIKI_URL + search_text)
-    return page
+    WIKI_URL = 'https://en.wikipedia.org/wiki/'
 
-# a function to get teh first paragraph 
+    def __init__(self,data):
+        self.data = data
+        self.page = requests.get(self.WIKI_URL + self.data)
+        self.wiki = BeautifulSoup(self.page.content, 'html.parser')
+        self.all_p = self.wiki.find('div',attrs={"class":"mw-parser-output"}).findAll('p')
+        # print(self.all_p)
 
-def get_first_para(page):
-    return
+    def get_firstpara(self):
+        if len(self.all_p) < 2:
+            return 'too many possibilities!!!!'
+        else:    
+            return self.all_p[2].text
 
 # invoke main
 if __name__ == "__main__":
-    # parse argument
-    call_wiki(search_text)
+
+    print ( 'Argument List:', str(sys.argv[1]) )
+
+    wiki1 = wiki(str(sys.argv[1]))
+    print (wiki1.get_firstpara())
+    # call_wiki(str(sys.argv[1]))
